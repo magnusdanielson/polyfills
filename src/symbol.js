@@ -25,6 +25,7 @@ if (typeof FEATURE_NO_ES2015 === 'undefined') {
     gOPD = Object[GOPD],
     create = Object.create,
     keys = Object.keys,
+    cachedWindowNames = typeof window === 'object' ? Object.getOwnPropertyNames(window) : [],
     defineProperty = Object[DP],
     $defineProperties = Object[DPies],
     descriptor = gOPD(Object, GOPN),
@@ -139,8 +140,18 @@ if (typeof FEATURE_NO_ES2015 === 'undefined') {
   defineProperty(Object, GOPS, descriptor);
 
   descriptor.value = function getOwnPropertyNames(o) {
-    return gOPN(o).filter(onlyNonSymbols);
-  };
+      if(o == null)
+      {
+        throw new TypeError('Can not call method on ' + o);
+      }
+      var val = Object(o);
+        if (_toString(val) === '[object Window]') 
+        {
+          return _concat([], cachedWindowNames);
+        }
+        return gOPN(o).filter(onlyNonSymbols);
+    };
+
   defineProperty(Object, GOPN, descriptor);
 
   descriptor.value = function defineProperties(o, descriptors) {
